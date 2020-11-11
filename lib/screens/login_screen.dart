@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iCoachSports/controller/firebasecontroller.dart';
+import 'package:iCoachSports/screens/coachhome_screen.dart';
 import 'package:iCoachSports/screens/createaccount_screen.dart';
 
 class LogInScreen extends StatefulWidget {
@@ -68,20 +69,19 @@ class _LogInState extends State<LogInScreen> {
                         onSaved: con.onSavedEmail,
                       ),
                       TextFormField(
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
-                        ),
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          icon: Icon(Icons.lock),
-                          hintText: 'Password',
-                        ),
-                        obscureText: true,
-                        autocorrect: false,
-                        validator: con.validatorPassword,
-                        onSaved: con.onSavedPassword
-                      ),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.0,
+                          ),
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            icon: Icon(Icons.lock),
+                            hintText: 'Password',
+                          ),
+                          obscureText: true,
+                          autocorrect: false,
+                          validator: con.validatorPassword,
+                          onSaved: con.onSavedPassword),
                       RaisedButton(
                         onPressed: con.signIn,
                         child: Text(
@@ -97,8 +97,7 @@ class _LogInState extends State<LogInScreen> {
                         height: 30.0,
                       ),
                       RaisedButton(
-                        onPressed: () => Navigator.pushNamed(
-                            context, CreateAccountScreen.routeName),
+                        onPressed: con.createAccount,
                         child: Text(
                           'Create Account',
                           style: TextStyle(
@@ -133,13 +132,20 @@ class _Controller {
 
     _state.formKey.currentState.save();
     print('=== email: $email      password: $password');
-
+    FirebaseUser user;
     try {
       var user = await FirebaseController.signIn(email, password);
       print('USER: $user');
     } catch (e) {
       print('************ $e');
     }
+
+    Navigator.pushReplacementNamed(_state.context, CoachHomeScreen.routeName,
+        arguments: {'user': user});
+  }
+
+  void createAccount() async {
+    Navigator.pushNamed(_state.context, CreateAccountScreen.routeName);
   }
 
   String validatorEmail(String value) {
@@ -154,7 +160,7 @@ class _Controller {
     email = value;
   }
 
-String validatorPassword(String value) {
+  String validatorPassword(String value) {
     if (value == null || value.length < 6) {
       return 'password min 6 chars';
     } else {
@@ -165,5 +171,4 @@ String validatorPassword(String value) {
   void onSavedPassword(String value) {
     password = value;
   }
-
 }
