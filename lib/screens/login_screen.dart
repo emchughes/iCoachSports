@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:iCoachSports/controller/firebasecontroller.dart';
 import 'package:iCoachSports/screens/coachhome_screen.dart';
 import 'package:iCoachSports/screens/createaccount_screen.dart';
+import 'package:iCoachSports/screens/views/mydialog.dart';
 
 class LogInScreen extends StatefulWidget {
   static const routeName = '/logInScreen';
@@ -131,16 +132,21 @@ class _Controller {
     }
 
     _state.formKey.currentState.save();
-    print('=== email: $email      password: $password');
+    MyDialog.circularProgressStart(_state.context);
     FirebaseUser user;
     try {
       var user = await FirebaseController.signIn(email, password);
       print('USER: $user');
     } catch (e) {
-      print('************ $e');
+      MyDialog.circularProgressEnd(_state.context);
+      MyDialog.info(
+        context: _state.context,
+        title: 'Sign In Error',
+        content: e.message ?? e.toString(),
+      );
+      return;
     }
-
-    Navigator.pushReplacementNamed(_state.context, CoachHomeScreen.routeName,
+    Navigator.pushNamed(_state.context, CoachHomeScreen.routeName,
         arguments: {'user': user});
   }
 

@@ -14,13 +14,13 @@ class ICoachSportsApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: LogInScreen.routeName,
         theme: ThemeData(
           textTheme: GoogleFonts.catamaranTextTheme(
             Theme.of(context).textTheme,
           ),
           primaryColor: Colors.green[300],
         ),
+        initialRoute: LogInScreen.routeName,
         routes: {
           LogInScreen.routeName: (context) => LogInScreen(),
           CreateAccountScreen.routeName: (context) => CreateAccountScreen(),
