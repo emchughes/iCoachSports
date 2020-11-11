@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iCoachSports/screens/createaccount_screen.dart';
 import 'package:iCoachSports/screens/login_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -11,19 +12,17 @@ class ICoachSportsApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      initialRoute: LogInScreen.routeName,
-      theme: ThemeData(
-        textTheme: GoogleFonts.catamaranTextTheme(
-          Theme.of(context).textTheme,
+        debugShowCheckedModeBanner: false,
+        initialRoute: LogInScreen.routeName,
+        theme: ThemeData(
+          textTheme: GoogleFonts.catamaranTextTheme(
+            Theme.of(context).textTheme,
+          ),
+          primaryColor: Colors.green[300],
         ),
-        primaryColor: Colors.green[200],
-      ),
-      routes: {
-      LogInScreen.routeName: (context) => LogInScreen(),
-    }
-      
-    );
+        routes: {
+          LogInScreen.routeName: (context) => LogInScreen(),
+          CreateAccountScreen.routeName: (context) => CreateAccountScreen(),
+        });
   }
 }
-

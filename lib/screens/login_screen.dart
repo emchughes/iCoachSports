@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iCoachSports/screens/createaccount_screen.dart';
 
 class LogInScreen extends StatefulWidget {
   static const routeName = '/logInScreen';
@@ -60,6 +61,8 @@ class _LogInState extends State<LogInScreen> {
                         ),
                         keyboardType: TextInputType.emailAddress,
                         autocorrect: false,
+                        // validator: con.validatorEmail,
+                        // onSaved: con.onSavedEmail,
                       ),
                       TextFormField(
                         style: TextStyle(
@@ -73,9 +76,11 @@ class _LogInState extends State<LogInScreen> {
                         ),
                         obscureText: true,
                         autocorrect: false,
+                        //validator: con.validatorPassword,
+                        //onSaved: con.onSavedPassword
                       ),
                       RaisedButton(
-                        onPressed: null,
+                        onPressed: null,//con.signIn,
                         child: Text(
                           'Log In',
                           style: TextStyle(
@@ -89,7 +94,7 @@ class _LogInState extends State<LogInScreen> {
                         height: 30.0,
                       ),
                       RaisedButton(
-                        onPressed: null,
+                        onPressed: () => Navigator.pushNamed(context, CreateAccountScreen.routeName),
                         child: Text(
                           'Create Account',
                           style: TextStyle(
@@ -97,7 +102,7 @@ class _LogInState extends State<LogInScreen> {
                             color: Colors.white,
                           ),
                         ),
-                        color: Colors.blue[200],
+                        color: Colors.blue[400],
                       ),
                     ],
                   ),
@@ -116,4 +121,27 @@ class _Controller {
   _Controller(this._state);
   String email;
   String password;
+
+  // void signIn() async {
+  //   if (!_state.formKey.currentState.validate()) {
+  //     return;
+  //   }
+
+  //   _state.formKey.currentState.save();
+
+  //   MyDialog.circularProgressStart(_state.context);
+
+  //   FirebaseUser user;
+  //   try {
+  //     user = await FirebaseController.signIn(email, password);
+  //     print('USER: $user');
+  //   } catch (e) {
+  //     MyDialog.circularProgressEnd(_state.context);
+  //     MyDialog.info(
+  //       context: _state.context,
+  //       title: 'Sign In Error',
+  //       content: e.message ?? e.toString(),
+  //     );
+  //     return;
+  //   }
 }
