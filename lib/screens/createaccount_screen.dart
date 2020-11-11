@@ -37,36 +37,59 @@ class _CreateAccountState extends State<CreateAccountScreen> {
         child: Form(
           key: formKey,
           child: Column(
-            children: <Widget>[
-              Text(
-                'Create an account',
-                style: TextStyle(fontSize: 25.0),
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                  hintText: 'Email',
-                ),
-                keyboardType: TextInputType.emailAddress,
-                autocorrect: false,
-                validator: con.validatorEmail,
-                onSaved: con.onSavedEmail,
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                  hintText: 'Password',
-                ),
-                obscureText: true,
-                autocorrect: false,
-                validator: con.validatorPassword,
-                onSaved: con.onSavedPassword,
-              ),
-              RaisedButton(
-                child: Text(
-                  'Create',
-                  style: TextStyle(fontSize: 20.0, color: Colors.white),
-                ),
-                color: Colors.blue,
-                onPressed: con.signUp,
+            children: [
+              Stack(
+                children: [
+                  Container(
+                    child: Image.asset(
+                      'assets/images/LogInScreen.jpg',
+                      height: 603,
+                      width: double.infinity,
+                      fit: BoxFit.fitHeight,
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      TextFormField(
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ),
+                        decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          icon: Icon(Icons.email),
+                          hintText: 'Email',
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                        autocorrect: false,
+                        validator: con.validatorEmail,
+                        onSaved: con.onSavedEmail,
+                      ),
+                      TextFormField(
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.0,
+                          ),
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            icon: Icon(Icons.lock),
+                            hintText: 'Password',
+                          ),
+                          obscureText: true,
+                          autocorrect: false,
+                          validator: con.validatorPassword,
+                          onSaved: con.onSavedPassword),
+                      RaisedButton(
+                        child: Text(
+                          'Create',
+                          style: TextStyle(fontSize: 20.0, color: Colors.white),
+                        ),
+                        color: Colors.blue,
+                        onPressed: con.signUp,
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),
