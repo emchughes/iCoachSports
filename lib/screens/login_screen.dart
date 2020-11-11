@@ -61,8 +61,8 @@ class _LogInState extends State<LogInScreen> {
                         ),
                         keyboardType: TextInputType.emailAddress,
                         autocorrect: false,
-                        // validator: con.validatorEmail,
-                        // onSaved: con.onSavedEmail,
+                        validator: con.validatorEmail,
+                        onSaved: con.onSavedEmail,
                       ),
                       TextFormField(
                         style: TextStyle(
@@ -80,7 +80,7 @@ class _LogInState extends State<LogInScreen> {
                         //onSaved: con.onSavedPassword
                       ),
                       RaisedButton(
-                        onPressed: null,//con.signIn,
+                        onPressed: null, //con.signIn,
                         child: Text(
                           'Log In',
                           style: TextStyle(
@@ -94,7 +94,8 @@ class _LogInState extends State<LogInScreen> {
                         height: 30.0,
                       ),
                       RaisedButton(
-                        onPressed: () => Navigator.pushNamed(context, CreateAccountScreen.routeName),
+                        onPressed: () => Navigator.pushNamed(
+                            context, CreateAccountScreen.routeName),
                         child: Text(
                           'Create Account',
                           style: TextStyle(
@@ -122,26 +123,24 @@ class _Controller {
   String email;
   String password;
 
-  // void signIn() async {
-  //   if (!_state.formKey.currentState.validate()) {
-  //     return;
-  //   }
+  void signIn() async {
+    if (!_state.formKey.currentState.validate()) {
+      return;
+    }
 
-  //   _state.formKey.currentState.save();
+    _state.formKey.currentState.save();
+    print('=== email: $email      password: $password');
+  }
 
-  //   MyDialog.circularProgressStart(_state.context);
+  String validatorEmail(String value) {
+    if (value == null || !value.contains('0') || !value.contains('.')) {
+      return 'Invalid email address';
+    } else {
+      return null;
+    }
+  }
 
-  //   FirebaseUser user;
-  //   try {
-  //     user = await FirebaseController.signIn(email, password);
-  //     print('USER: $user');
-  //   } catch (e) {
-  //     MyDialog.circularProgressEnd(_state.context);
-  //     MyDialog.info(
-  //       context: _state.context,
-  //       title: 'Sign In Error',
-  //       content: e.message ?? e.toString(),
-  //     );
-  //     return;
-  //   }
+  void onSavedEmail(String value) {
+    email = value;
+  }
 }
