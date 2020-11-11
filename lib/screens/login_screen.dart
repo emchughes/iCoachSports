@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:iCoachSports/controller/firebasecontroller.dart';
 import 'package:iCoachSports/screens/createaccount_screen.dart';
 
 class LogInScreen extends StatefulWidget {
@@ -11,6 +13,7 @@ class LogInScreen extends StatefulWidget {
 
 class _LogInState extends State<LogInScreen> {
   _Controller con;
+  FirebaseUser user;
   var formKey = GlobalKey<FormState>();
 
   @override
@@ -76,11 +79,11 @@ class _LogInState extends State<LogInScreen> {
                         ),
                         obscureText: true,
                         autocorrect: false,
-                        //validator: con.validatorPassword,
-                        //onSaved: con.onSavedPassword
+                        validator: con.validatorPassword,
+                        onSaved: con.onSavedPassword
                       ),
                       RaisedButton(
-                        onPressed: null, //con.signIn,
+                        onPressed: con.signIn,
                         child: Text(
                           'Log In',
                           style: TextStyle(
@@ -88,7 +91,7 @@ class _LogInState extends State<LogInScreen> {
                             color: Colors.white,
                           ),
                         ),
-                        color: Colors.blue[200],
+                        color: Colors.blue[300],
                       ),
                       SizedBox(
                         height: 30.0,
@@ -130,10 +133,17 @@ class _Controller {
 
     _state.formKey.currentState.save();
     print('=== email: $email      password: $password');
+
+    try {
+      var user = await FirebaseController.signIn(email, password);
+      print('USER: $user');
+    } catch (e) {
+      print('************ $e');
+    }
   }
 
   String validatorEmail(String value) {
-    if (value == null || !value.contains('0') || !value.contains('.')) {
+    if (value == null || !value.contains('@') || !value.contains('.')) {
       return 'Invalid email address';
     } else {
       return null;
@@ -143,4 +153,17 @@ class _Controller {
   void onSavedEmail(String value) {
     email = value;
   }
+
+String validatorPassword(String value) {
+    if (value == null || value.length < 6) {
+      return 'password min 6 chars';
+    } else {
+      return null;
+    }
+  }
+
+  void onSavedPassword(String value) {
+    password = value;
+  }
+
 }
