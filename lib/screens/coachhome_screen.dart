@@ -1,61 +1,59 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class CoachHomeScreen extends StatefulWidget {
+import 'addteam_screen.dart';
+
+class CoachHomeScreen extends StatelessWidget {
   static const routeName = 'lohInScreen/coachHomeScreen';
-  @override
-  State<StatefulWidget> createState() {
-    return _CoachHomeState();
-  }
-}
-
-class _CoachHomeState extends State<CoachHomeScreen> {
-  _Controller con;
-  FirebaseUser user;
-  var formKey = GlobalKey<FormState>();
-
-  @override
-  void initState() {
-    super.initState();
-    con = _Controller(this);
-  }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () => Future.value(false),
       child: Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'iCoachSports',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 30,
+        appBar: AppBar(
+          title: Text(
+            'iCoachSports',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 30,
+            ),
           ),
         ),
-      ),
-      body: Column (
-        children: [
-          Stack(
-            children: [
-              Container(
-                child: Image.asset(
-                  'assets/images/LogInScreen.jpg',
-                  height: 603,
-                  width: double.infinity,
-                  fit: BoxFit.fitHeight,
+        body: Column(
+          children: [
+            Stack(
+              children: [
+                Container(
+                  child: Image.asset(
+                    'assets/images/LogInScreen.jpg',
+                    height: 603,
+                    width: double.infinity,
+                    fit: BoxFit.fitHeight,
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],),
-    )
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: RaisedButton(
+                        child: Text(
+                          'Add New Team',
+                          style: TextStyle(fontSize: 20.0, color: Colors.white),
+                        ),
+                        color: Colors.blue,
+                        onPressed: () => Navigator.pushNamed(
+                            context, AddTeamScreen.routeName),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
-}
-
-class _Controller {
-  _CoachHomeState _state;
-  _Controller(this._state);
 }

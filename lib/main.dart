@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iCoachSports/screens/addteam_screen.dart';
 import 'package:iCoachSports/screens/coachhome_screen.dart';
 import 'package:iCoachSports/screens/createaccount_screen.dart';
 import 'package:iCoachSports/screens/login_screen.dart';
@@ -25,6 +26,7 @@ class ICoachSportsApp extends StatelessWidget {
           LogInScreen.routeName: (context) => LogInScreen(),
           CreateAccountScreen.routeName: (context) => CreateAccountScreen(),
           CoachHomeScreen.routeName: (context) => CoachHomeScreen(),
+          AddTeamScreen.routeName: (context) => AddTeamScreen(),
         });
   }
 }
