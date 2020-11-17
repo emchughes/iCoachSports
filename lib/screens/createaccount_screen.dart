@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iCoachSports/controller/firebasecontroller.dart';
+import 'package:iCoachSports/models/user.dart';
 import 'package:iCoachSports/screens/views/mydialog.dart';
 
 class CreateAccountScreen extends StatefulWidget {
@@ -13,15 +14,18 @@ class CreateAccountScreen extends StatefulWidget {
 class _CreateAccountState extends State<CreateAccountScreen> {
   _Controller con;
   var formKey = GlobalKey<FormState>();
+  User user;
 
   @override
   void initState() {
     super.initState();
     con = _Controller(this);
   }
+  void render(fn) => setState(fn);
 
   @override
   Widget build(BuildContext context) {
+    user = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -79,6 +83,13 @@ class _CreateAccountState extends State<CreateAccountScreen> {
                           autocorrect: false,
                           validator: con.validatorPassword,
                           onSaved: con.onSavedPassword),
+                      Text('User Type'),
+                      
+                      DropdownButtonFormField(
+                        hint: Text('select user type'),
+                        onChanged: con.onChangedType,
+                        items: con.getUserList(),
+                      ),
                       RaisedButton(
                         child: Text(
                           'Create',
@@ -104,6 +115,7 @@ class _Controller {
   _Controller(this._state);
   String email;
   String password;
+  User user;
 
   void signUp() async {
     if (!_state.formKey.currentState.validate()) return;
@@ -145,5 +157,18 @@ class _Controller {
 
   void onSavedPassword(String value) {
     this.password = value;
+  }
+
+  List getUserList() {
+    return Type.values.map((t) {
+            return DropdownMenuItem(
+              value: t,
+              child: Text(t.toString().split('.')[1]),
+            );
+          }).toList();
+  }
+
+  void onChangedType(Type t) {
+    _state.user.type = t;
   }
 }

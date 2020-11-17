@@ -22,7 +22,9 @@ class _CoachHomeState extends State<CoachHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: () => Future.value(false),
+      child: Scaffold(
       appBar: AppBar(
         title: Text(
           'iCoachSports',
@@ -33,7 +35,22 @@ class _CoachHomeState extends State<CoachHomeScreen> {
           ),
         ),
       ),
-      body: Text('coach home page'),
+      body: Column (
+        children: [
+          Stack(
+            children: [
+              Container(
+                child: Image.asset(
+                  'assets/images/LogInScreen.jpg',
+                  height: 603,
+                  width: double.infinity,
+                  fit: BoxFit.fitHeight,
+                ),
+              ),
+            ],
+          ),
+        ],),
+    )
     );
   }
 }
