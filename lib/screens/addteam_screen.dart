@@ -24,12 +24,13 @@ class _AddTeamState extends State<AddTeamScreen> {
     super.initState();
     con = _Controller(this);
   }
+
   render(fn) => setState(fn);
   @override
   Widget build(BuildContext context) {
     Map args = ModalRoute.of(context).settings.arguments;
     user ??= args['user'];
-    teams ??= args['teamList'];
+    teams = [];
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -110,21 +111,34 @@ class _Controller {
     }
 
     _state.formKey.currentState.save();
-
+    User user;
     try {
       MyDialog.circularProgressStart(_state.context);
+
+      // 3. save teamInfo document to Firestore
       var t = TeamInfo(
         teamName: teamName,
         sport: sport,
+        createdBy: '1@test.com',
       );
 
       t.docId = await FirebaseController.addTeamInfo(t);
+      print('state: $_state');
       _state.teams.insert(0, t);
 
       MyDialog.circularProgressEnd(_state.context);
 
       Navigator.pushNamed(_state.context, MyTeamsScreen.routeName);
-    } catch (e) {}
+    } catch (e) {
+      MyDialog.circularProgressEnd(_state.context);
+
+      MyDialog.info(
+        context: _state.context,
+        title: 'FireBase Error',
+        content: e.toString(),
+      );
+      return;
+    }
   }
 
   void onSavedTeamName(String value) {

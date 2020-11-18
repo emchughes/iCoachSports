@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iCoachSports/controller/firebasecontroller.dart';
+import 'package:iCoachSports/models/teamInfo.dart';
 import 'package:iCoachSports/screens/coachhome_screen.dart';
 import 'package:iCoachSports/screens/createaccount_screen.dart';
+import 'package:iCoachSports/screens/myteams_screen.dart';
 import 'package:iCoachSports/screens/views/mydialog.dart';
 
 class LogInScreen extends StatefulWidget {
@@ -15,7 +17,7 @@ class LogInScreen extends StatefulWidget {
 
 class _LogInState extends State<LogInScreen> {
   _Controller con;
-  FirebaseUser user;
+  User user;
   var formKey = GlobalKey<FormState>();
 
   @override
@@ -133,7 +135,7 @@ class _Controller {
 
     _state.formKey.currentState.save();
     MyDialog.circularProgressStart(_state.context);
-    FirebaseUser user;
+    User user;
     try {
       var user = await FirebaseController.signIn(email, password);
       print('USER: $user');
@@ -146,6 +148,7 @@ class _Controller {
       );
       return;
     }
+     
     Navigator.pushNamed(_state.context, CoachHomeScreen.routeName,
         arguments: {'user': user});
   }
@@ -177,4 +180,5 @@ class _Controller {
   void onSavedPassword(String value) {
     password = value;
   }
+
 }
