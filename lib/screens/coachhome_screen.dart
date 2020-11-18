@@ -1,12 +1,35 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:iCoachSports/models/teamInfo.dart';
 
 import 'addteam_screen.dart';
 
-class CoachHomeScreen extends StatelessWidget {
-  static const routeName = 'lohInScreen/coachHomeScreen';
+class CoachHomeScreen extends StatefulWidget {
+  static const routeName = '/signInScreen/homeScreen';
+  @override
+  State<StatefulWidget> createState() {
+    return _CoachHomeState();
+  }
+}
+class _CoachHomeState extends State<CoachHomeScreen> {
+    _Controller con;
+  User user;
+   List<TeamInfo> teams;
+
+  @override
+  void initState() {
+    super.initState();
+    con = _Controller(this);
+  }
+
+  render(fn) => setState(fn);
 
   @override
   Widget build(BuildContext context) {
+
+        Map arg = ModalRoute.of(context).settings.arguments;
+    user ??= arg['user'];
+    teams ??= arg['teamList'];
     return WillPopScope(
       onWillPop: () => Future.value(false),
       child: Scaffold(
@@ -43,8 +66,7 @@ class CoachHomeScreen extends StatelessWidget {
                           style: TextStyle(fontSize: 20.0, color: Colors.white),
                         ),
                         color: Colors.blue,
-                        onPressed: () => Navigator.pushNamed(
-                            context, AddTeamScreen.routeName),
+                        onPressed: con.addTeamButton,
                       ),
                     ),
                   ],
@@ -55,5 +77,20 @@ class CoachHomeScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _Controller {
+  _CoachHomeState _state;
+  int delIndex;
+  String searchKey;
+
+  _Controller(this._state);
+
+  void addTeamButton() async {
+    //navigate to AddScreen
+    await Navigator.pushNamed(_state.context, AddTeamScreen.routeName,
+        arguments: {'user': _state.user, 'teamList': _state.teams});
+    _state.render(() {});
   }
 }

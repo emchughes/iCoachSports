@@ -1,11 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:iCoachSports/screens/addteam_screen.dart';
 import 'package:iCoachSports/screens/coachhome_screen.dart';
 import 'package:iCoachSports/screens/createaccount_screen.dart';
 import 'package:iCoachSports/screens/login_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iCoachSports/screens/myteams_screen.dart';
 
-void main() {
+Future<void> main() async {
+    WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(ICoachSportsApp());
 }
 
@@ -27,6 +31,7 @@ class ICoachSportsApp extends StatelessWidget {
           CreateAccountScreen.routeName: (context) => CreateAccountScreen(),
           CoachHomeScreen.routeName: (context) => CoachHomeScreen(),
           AddTeamScreen.routeName: (context) => AddTeamScreen(),
+          MyTeamsScreen.routeName: (context) => MyTeamsScreen(),
         });
   }
 }

@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:iCoachSports/models/teamInfo.dart';
+
 
 class FirebaseController {
   static Future signIn(String email, String password) async {
-    AuthResult auth = await FirebaseAuth.instance
+    UserCredential auth = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
     return auth.user;
   }
@@ -10,5 +13,12 @@ class FirebaseController {
     static Future<void> createAccount(String email, String password) async {
     await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password);
+  }
+
+    static Future<String> addTeamInfo(TeamInfo team) async {
+    DocumentReference ref = await FirebaseFirestore.instance
+        .collection(TeamInfo.COLLECTION)
+        .add(team.serialize());
+    return ref.id;
   }
 }
