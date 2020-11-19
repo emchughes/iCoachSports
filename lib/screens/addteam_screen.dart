@@ -104,6 +104,7 @@ class _Controller {
   _Controller(this._state);
   String teamName;
   String sport;
+  String email;
 
   void save() async {
     if (!_state.formKey.currentState.validate()) {
@@ -119,16 +120,20 @@ class _Controller {
       var t = TeamInfo(
         teamName: teamName,
         sport: sport,
-        createdBy: '1@test.com',
+        createdBy: email,
       );
 
       t.docId = await FirebaseController.addTeamInfo(t);
-      print('state: $_state');
-      _state.teams.insert(0, t);
+      // print('state: $_state');
+      // _state.teams.insert(0, t);
 
+      List<TeamInfo> teams = await FirebaseController.getTeamInfo(email);
       MyDialog.circularProgressEnd(_state.context);
+      // 2. navigate to my teams screen to display teams
+      Navigator.pushReplacementNamed(_state.context, MyTeamsScreen.routeName,
+          arguments: {'user': user, 'teamsList': teams});
 
-      Navigator.pushNamed(_state.context, MyTeamsScreen.routeName);
+      //Navigator.pushNamed(_state.context, MyTeamsScreen.routeName);
     } catch (e) {
       MyDialog.circularProgressEnd(_state.context);
 

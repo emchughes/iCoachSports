@@ -22,8 +22,11 @@ class FirebaseController {
   }
 
   static Future<List<TeamInfo>> getTeamInfo(String email) async {
-    QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection(TeamInfo.COLLECTION).get();
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection(TeamInfo.COLLECTION)
+        .where(TeamInfo.CREATED_BY, isEqualTo: email)
+        .orderBy(TeamInfo.TEAM_NAME, descending: true)
+        .get();
 
     var result = <TeamInfo>[];
     if (querySnapshot != null && querySnapshot.docs.length != 0) {

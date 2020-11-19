@@ -148,9 +148,11 @@ class _Controller {
       );
       return;
     }
-     
+
+    List<TeamInfo> teams = await FirebaseController.getTeamInfo(email);
+
     Navigator.pushNamed(_state.context, CoachHomeScreen.routeName,
-        arguments: {'user': user});
+        arguments: {'user': user, 'teamList': teams});
   }
 
   void createAccount() async {
@@ -180,5 +182,4 @@ class _Controller {
   void onSavedPassword(String value) {
     password = value;
   }
-
 }
