@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:iCoachSports/screens/addteam_screen.dart';
 import 'package:iCoachSports/screens/coachhome_screen.dart';
 import 'package:iCoachSports/screens/createaccount_screen.dart';
+import 'package:iCoachSports/screens/createstrategy_screen.dart';
 import 'package:iCoachSports/screens/login_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iCoachSports/screens/myteams_screen.dart';
@@ -32,6 +33,7 @@ class ICoachSportsApp extends StatelessWidget {
           CoachHomeScreen.routeName: (context) => CoachHomeScreen(),
           AddTeamScreen.routeName: (context) => AddTeamScreen(),
           MyTeamsScreen.routeName: (context) => MyTeamsScreen(),
+          CreateStrategyScreen.routeName: (context) => CreateStrategyScreen(),
         });
   }
 }

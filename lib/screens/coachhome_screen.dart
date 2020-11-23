@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iCoachSports/controller/firebasecontroller.dart';
 import 'package:iCoachSports/models/teamInfo.dart';
+import 'package:iCoachSports/screens/createstrategy_screen.dart';
 import 'package:iCoachSports/screens/myteams_screen.dart';
 import 'package:iCoachSports/screens/views/mydialog.dart';
 
@@ -46,9 +47,8 @@ class _CoachHomeState extends State<CoachHomeScreen> {
             ),
           ),
         ),
-        body: Column(
-          children: [
-            Stack(
+        body: SingleChildScrollView(
+          child: Stack(
               children: [
                 Container(
                   child: Image.asset(
@@ -72,6 +72,18 @@ class _CoachHomeState extends State<CoachHomeScreen> {
                         onPressed: con.viewTeamsButton,
                       ),
                     ),
+                    SizedBox(height: 20.0),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: RaisedButton(
+                        child: Text(
+                          'Create Strategy',
+                          style: TextStyle(fontSize: 20.0, color: Colors.white),
+                        ),
+                        color: Colors.blue,
+                        onPressed: () => Navigator.pushNamed(context, CreateStrategyScreen.routeName),
+                      ),
+                    ),
                   ],
                 ),
                 Column(
@@ -92,7 +104,6 @@ class _CoachHomeState extends State<CoachHomeScreen> {
                 ),
               ],
             ),
-          ],
         ),
       ),
     );
