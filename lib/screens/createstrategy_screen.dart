@@ -1,6 +1,8 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:iCoachSports/controller/firebasecontroller.dart';
+import 'package:iCoachSports/screens/views/mydialog.dart';
 
 class CreateStrategyScreen extends StatefulWidget {
   static const routeName = '/coachHomeScreen/createStrategyScreen';
@@ -12,6 +14,8 @@ class CreateStrategyScreen extends StatefulWidget {
 
 class _CreateStrategyState extends State<CreateStrategyScreen> {
   _Controller con;
+  var formKey = GlobalKey<FormState>();
+
 
   void initState() {
     super.initState();
@@ -103,7 +107,17 @@ class _CreateStrategyState extends State<CreateStrategyScreen> {
 class _Controller {
   _CreateStrategyState _state;
   _Controller(this._state);
+
+  void save() async {
+     if (!_state.formKey.currentState.validate()) {
+      return;
+    }
+    _state.formKey.currentState.save();
+  
+  }
+
 }
+
 
 class TouchPoints {
   Paint paint;
