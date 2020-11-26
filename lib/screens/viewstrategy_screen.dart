@@ -1,21 +1,22 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:iCoachSports/models/teamInfo.dart';
+import 'package:iCoachSports/models/StrategyInfo.dart';
+import 'package:iCoachSports/screens/views/myimageview.dart';
 
-class MyTeamsScreen extends StatefulWidget {
-  static const routeName = 'coachHomeScreen/myTeamsScreen';
+class ViewStrategyScreen extends StatefulWidget {
+  static const routeName = 'coachHomeScreen/viewStrategyScreen';
 
   @override
   State<StatefulWidget> createState() {
-    return _MyTeamsState();
+    return _ViewStrategyState();
   }
 }
 
-class _MyTeamsState extends State<MyTeamsScreen> {
+class _ViewStrategyState extends State<ViewStrategyScreen> {
   _Controller con;
   User user;
   String email;
-  List<TeamInfo> teams;
+  List<StrategyInfo> strategies;
   var formKey = GlobalKey<FormState>();
 
   @override
@@ -28,14 +29,14 @@ class _MyTeamsState extends State<MyTeamsScreen> {
   @override
   Widget build(BuildContext context) {
     Map arg = ModalRoute.of(context).settings.arguments;
-    print('arguments: $arg');
+    print('View Strategies...arguments: $arg');
     user ??= arg['user'];
-    teams ??= arg['teamsList'];
+    strategies ??= arg['strategyList'];
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'My Teams',
+          'My Strategies',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -43,19 +44,20 @@ class _MyTeamsState extends State<MyTeamsScreen> {
           ),
         ),
       ),
-      body: teams.length == 0
-          ? Text('No Teams', style: TextStyle(fontSize: 30.0))
+      body: strategies.length == 0
+          ? Text('No Strategies', style: TextStyle(fontSize: 30.0))
           : ListView.builder(
-              itemCount: teams.length,
+              itemCount: strategies.length,
               itemBuilder: (BuildContext context, int index) => Container(
                 child: ListTile(
-                  title: Text(teams[index].teamName),
+                  leading: MyImageView.network(
+                        imageUrl: strategies[index].imageURL, context: context),
+                  title: Text(strategies[index].strategyTitle),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text('Created by: ${teams[index].createdBy}'),
-                      Text('Team Name: ${teams[index].teamName}'),
-                      Text('Sport: ${teams[index].sport}'),
+                      Text('Created by: ${strategies[index].createdBy}'),
+                      Text('Strategy title: ${strategies[index].strategyTitle}'),
                     ],
                   ),
                 ),
@@ -66,7 +68,8 @@ class _MyTeamsState extends State<MyTeamsScreen> {
 }
 
 class _Controller {
-  _MyTeamsState _state;
+  _ViewStrategyState _state;
 
   _Controller(this._state);
 }
+

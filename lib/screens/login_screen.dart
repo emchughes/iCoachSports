@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iCoachSports/controller/firebasecontroller.dart';
+import 'package:iCoachSports/models/StrategyInfo.dart';
 import 'package:iCoachSports/models/teamInfo.dart';
 import 'package:iCoachSports/screens/coachhome_screen.dart';
 import 'package:iCoachSports/screens/createaccount_screen.dart';
@@ -150,9 +151,11 @@ class _Controller {
     }
 
     List<TeamInfo> teams = await FirebaseController.getTeamInfo(email);
+    List<StrategyInfo> strategies =
+        await FirebaseController.getStrategyInfo(email);
 
     Navigator.pushNamed(_state.context, CoachHomeScreen.routeName,
-        arguments: {'user': user, 'teamList': teams});
+        arguments: {'user': user, 'teamList': teams, 'strategyList': strategies});
   }
 
   void createAccount() async {

@@ -6,10 +6,12 @@ class TeamInfo {
   static const SPORT = 'sport';
   static const TEAM_MEMBERS = 'teamMembers';
 
+
   String createdBy;
   String docId;
   String teamName;
   String sport;
+  
   List<dynamic> teamMembers; // list of all team members
 
   TeamInfo({

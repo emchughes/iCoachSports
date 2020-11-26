@@ -7,6 +7,7 @@ import 'package:iCoachSports/screens/createstrategy_screen.dart';
 import 'package:iCoachSports/screens/login_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iCoachSports/screens/myteams_screen.dart';
+import 'package:iCoachSports/screens/viewstrategy_screen.dart';
 
 Future<void> main() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +35,7 @@ class ICoachSportsApp extends StatelessWidget {
           AddTeamScreen.routeName: (context) => AddTeamScreen(),
           MyTeamsScreen.routeName: (context) => MyTeamsScreen(),
           CreateStrategyScreen.routeName: (context) => CreateStrategyScreen(),
+          ViewStrategyScreen.routeName: (context) => ViewStrategyScreen(),
         });
   }
 }
