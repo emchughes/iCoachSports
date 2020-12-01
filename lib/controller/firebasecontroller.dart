@@ -4,8 +4,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:iCoachSports/models/StrategyInfo.dart';
 import 'package:iCoachSports/models/teamInfo.dart';
+import 'dart:typed_data';
+//import 'package:image_picker_web/image_picker_web.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart'; // For Image Picker
+import 'package:path/path.dart' as Path;
 
 class FirebaseController {
   static Future signIn(String email, String password) async {
@@ -41,6 +48,7 @@ class FirebaseController {
     }
     return result;
   }
+
   static Future<List<StrategyInfo>> getStrategyInfo(String email) async {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection(StrategyInfo.COLLECTION)
@@ -57,32 +65,74 @@ class FirebaseController {
     return result;
   }
 
-  static Future<Map<String, String>> uploadStorage({
-    @required File image,
-    String filePath,
-    @required String uid,
-    @required Function listener,
-  }) async {
-    filePath ??= '${StrategyInfo.IMAGE_FOLDER}/$uid/${DateTime.now()}';
+  // static Future<Map<String, String>> uploadStorage({
+  //   @required File image,
+  //   String filePath,
+  //   @required String uid,
+  //   @required Function listener,
+  // }) async {
+  //   print('made it to upload storage');
+  //   filePath ??= '${StrategyInfo.IMAGE_FOLDER}/$uid/${DateTime.now()}';
 
-     StorageUploadTask task =
-        FirebaseStorage.instance.ref().child(filePath).putFile(image);
-    task.events.listen((event) {
-      double percentage = (event.snapshot.bytesTransferred.toDouble() /
-              event.snapshot.totalByteCount.toDouble()) *
-          100;
-      listener(percentage);
-    });
-    var download = await task.onComplete;
-    String url = await download.ref.getDownloadURL();
-    print('===========URL: $url');
-    return {'url': url, 'path': filePath};
+  //   StorageUploadTask task =
+  //       FirebaseStorage.instance.ref().child(filePath).putFile(image);
+  //   task.events.listen((event) {
+  //     double percentage = (event.snapshot.bytesTransferred.toDouble() /
+  //             event.snapshot.totalByteCount.toDouble()) *
+  //         100;
+  //     listener(percentage);
+  //   });
+  //   var download = await task.onComplete;
+  //   String url = await download.ref.getDownloadURL();
+  //   print('===========URL: $url');
+  //   return {'url': url, 'path': filePath};
+  // }
+
+  static Future uploadImageToFirebase(File imageFile) async {
+    print('made it to uploadImage');
+    //File imageFile;
+    String fileName = Path.basename(imageFile.path);
+    print('fileName: $fileName');
+    StorageReference firebaseStorageRef =
+        FirebaseStorage.instance.ref().child('uploads/$fileName');
+    print('firebaseStorageRef: $firebaseStorageRef');
+
+    StorageUploadTask uploadTask = firebaseStorageRef.putFile(imageFile);
+    print('uploadTask: $uploadTask');
+    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+    print('taskSnapshot: $taskSnapshot');
+
+    taskSnapshot.ref.getDownloadURL().then(
+          (value) => print("Done: $value"),
+        );
   }
 
-    static Future<String> addStrategy(StrategyInfo strategy) async {
+  static Future<String> addStrategy(StrategyInfo strategy) async {
     DocumentReference ref = await FirebaseFirestore.instance
         .collection(TeamInfo.COLLECTION)
         .add(strategy.serialize());
     return ref.id;
   }
+
+  //convert to file to upload
+//   final formkey = GlobalKey<FormState>();
+//   Uint8List image;
+//   Future<void> getImage() async {
+//     //Uint8List tempImg = await ImagePickerWeb.getImage(outputType: ImageType.bytes);
+//     Uint8List bytesFromPicker =
+//         await ImagePicker.getImage(asUint8List: true);
+
+//     if (bytesFromPicker != null) {
+//       debugPrint(bytesFromPicker.toString());
+//  if (tempImg != null) {
+//   setState(() async {
+//     image = tempImg;
+//     final tempDir = await getTemporaryDirectory();
+//     final file = await new File('${tempDir.path}/image.jpg').create();
+//     file.writeAsBytesSync(image);
+//     });
+//    }
+//   }
+// }
+//}
 }

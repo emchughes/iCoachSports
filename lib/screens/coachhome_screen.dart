@@ -5,6 +5,7 @@ import 'package:iCoachSports/models/StrategyInfo.dart';
 import 'package:iCoachSports/models/teamInfo.dart';
 import 'package:iCoachSports/screens/createstrategy_screen.dart';
 import 'package:iCoachSports/screens/myteams_screen.dart';
+import 'package:iCoachSports/screens/viewprofile_screen.dart';
 import 'package:iCoachSports/screens/views/mydialog.dart';
 import 'package:iCoachSports/screens/viewstrategy_screen.dart';
 
@@ -100,6 +101,18 @@ class _CoachHomeState extends State<CoachHomeScreen> {
                       onPressed: con.viewStrategyButton,
                     ),
                   ),
+                  SizedBox(height: 20.0),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: RaisedButton(
+                      child: Text(
+                        'View Profile',
+                        style: TextStyle(fontSize: 20.0, color: Colors.white),
+                      ),
+                      color: Colors.blue,
+                      onPressed: con.viewProfile,
+                    ),
+                  ),
                 ],
               ),
               Column(
@@ -135,6 +148,13 @@ class _Controller {
     //navigate to AddScreen
     print('Add team State: $_state');
     await Navigator.pushNamed(_state.context, AddTeamScreen.routeName,
+        arguments: {'user': _state.user, 'teamList': _state.teams});
+    _state.render(() {});
+  }
+
+  void viewProfile() async {
+    //navigate to Profile page
+    await Navigator.pushNamed(_state.context, ViewProfileScreen.routeName,
         arguments: {'user': _state.user, 'teamList': _state.teams});
     _state.render(() {});
   }

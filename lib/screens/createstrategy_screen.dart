@@ -1,9 +1,10 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui' as ui;
-import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:iCoachSports/controller/firebasecontroller.dart';
 import 'package:iCoachSports/models/StrategyInfo.dart';
 import 'package:iCoachSports/screens/viewstrategy_screen.dart';
@@ -19,8 +20,8 @@ class CreateStrategyScreen extends StatefulWidget {
 
 class _CreateStrategyState extends State<CreateStrategyScreen> {
   _Controller con;
-  File image;
   User user;
+  File image = new File('assets/images/LogInScreen.jpg');
   List<StrategyInfo> strategies;
   void initState() {
     super.initState();
@@ -29,7 +30,7 @@ class _CreateStrategyState extends State<CreateStrategyScreen> {
 
   void render(fn) => setState(fn);
 
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  var formKey = GlobalKey<FormState>();
   GlobalKey globalKey = GlobalKey();
 
   List<TouchPoints> points = List();
@@ -55,65 +56,68 @@ class _CreateStrategyState extends State<CreateStrategyScreen> {
           ),
         ],
       ),
-      body: Container(
-        child: GestureDetector(
-          onPanUpdate: (details) {
-            setState(() {
-              RenderBox renderBox = context.findRenderObject();
-              points.add(TouchPoints(
-                  points: renderBox.globalToLocal(details.globalPosition),
-                  paint: Paint()
-                    ..strokeCap = strokeType
-                    ..isAntiAlias = true
-                    ..color = Colors.white.withOpacity(opacity)
-                    ..strokeWidth = strokeWidth));
-            });
-          },
-          onPanStart: (details) {
-            setState(() {
-              RenderBox renderBox = context.findRenderObject();
-              points.add(TouchPoints(
-                  points: renderBox.globalToLocal(details.globalPosition),
-                  paint: Paint()
-                    ..strokeCap = strokeType
-                    ..isAntiAlias = true
-                    ..color = selectedColor.withOpacity(opacity)
-                    ..strokeWidth = strokeWidth));
-            });
-          },
-          onPanEnd: (details) {
-            setState(() {
-              points.add(null);
-            });
-          },
-          child: RepaintBoundary(
-            key: globalKey,
-            child: Stack(
-              children: <Widget>[
-                Center(
-                  child: Image.asset(
-                    'assets/images/SoccerBoard.png',
-                    height: 602,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
+      body: Form(
+        key: formKey,
+        child: Container(
+          child: GestureDetector(
+            onPanUpdate: (details) {
+              setState(() {
+                RenderBox renderBox = context.findRenderObject();
+                points.add(TouchPoints(
+                    points: renderBox.globalToLocal(details.globalPosition),
+                    paint: Paint()
+                      ..strokeCap = strokeType
+                      ..isAntiAlias = true
+                      ..color = Colors.white.withOpacity(opacity)
+                      ..strokeWidth = strokeWidth));
+              });
+            },
+            onPanStart: (details) {
+              setState(() {
+                RenderBox renderBox = context.findRenderObject();
+                points.add(TouchPoints(
+                    points: renderBox.globalToLocal(details.globalPosition),
+                    paint: Paint()
+                      ..strokeCap = strokeType
+                      ..isAntiAlias = true
+                      ..color = selectedColor.withOpacity(opacity)
+                      ..strokeWidth = strokeWidth));
+              });
+            },
+            onPanEnd: (details) {
+              setState(() {
+                points.add(null);
+              });
+            },
+            child: RepaintBoundary(
+              key: globalKey,
+              child: Stack(
+                children: <Widget>[
+                  Center(
+                    child: Image.asset(
+                      'assets/images/SoccerBoard.png',
+                      height: 602,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                ),
-                CustomPaint(
-                  size: Size.infinite,
-                  painter: MyPainter(
-                    pointsList: points,
+                  CustomPaint(
+                    size: Size.infinite,
+                    painter: MyPainter(
+                      pointsList: points,
+                    ),
                   ),
-                ),
-                FloatingActionButton(
-                    heroTag: "erase",
-                    child: Icon(Icons.clear),
-                    tooltip: "Erase",
-                    onPressed: () {
-                      setState(() {
-                        points.clear();
-                      });
-                    }),
-              ],
+                  FloatingActionButton(
+                      heroTag: "erase",
+                      child: Icon(Icons.clear),
+                      tooltip: "Erase",
+                      onPressed: () {
+                        setState(() {
+                          points.clear();
+                        });
+                      }),
+                ],
+              ),
             ),
           ),
         ),
@@ -130,108 +134,79 @@ class _Controller {
   String strategyTeamName;
   String email;
 
-  // void generateImage() async {
-  //   print('GenerateImage...user: $_state.user, uid: $_state.uid');
-  //   //final color = Colors.primaries[widget.rd.nextInt(widget.numColors)];
-  //   final recorder = ui.PictureRecorder();
-  //   final canvas = Canvas(recorder,
-  //       Rect.fromPoints(Offset(0.0, 0.0), Offset(canvasSize, canvasSize)));
-  //           final stroke = Paint()
-  //     ..color = Colors.grey
-  //     ..style = PaintingStyle.stroke;
-
-  //   canvas.drawRect(Rect.fromLTWH(0.0, 0.0, canvasSize, canvasSize), stroke);
-
-  //   final paint = Paint()
-  //    // ..color = color
-  //     ..style = PaintingStyle.fill;
-
-  //   // canvas.drawCircle(
-  //   //     Offset(
-  //   //       widget.rd.nextDouble() * canvasSize,
-  //   //       widget.rd.nextDouble() * canvasSize,
-  //   //     ),
-  //   //     20.0,
-  //   //     paint);
-  //   final picture = recorder.endRecording();
-  //   final img = await picture.toImage(200, 200);
-  //   final pngBytes = await img.toByteData(format: ImageByteFormat.png);
-
-  //   // setState(() {
-  //   //   imgBytes = pngBytes;
-  //   // });
-  //   save();
-  // }
-
-  void save() async {
+  Future<void> save() async {
     User user;
- List<StrategyInfo> strategies = await FirebaseController.getStrategyInfo(email);
-      Navigator.pushNamed(_state.context, ViewStrategyScreen.routeName,
-          arguments: {'user': user, 'strategyList': strategies});
+    File file;
+    //convert current screen to image
+    RenderRepaintBoundary boundary =
+        _state.globalKey.currentContext.findRenderObject();
+    ui.Image image = await boundary.toImage();
+    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    Uint8List pngBytes = byteData.buffer.asUint8List();
+    print('pngBytes: $pngBytes');
 
-    // print('Save...user: $_state.user, uid: $_state.uid');
+    file = new File.fromRawPath(pngBytes);
+
+    print('file: $file');
+    //File file =  await FirebaseController.convertImagetoFile(image);
+
+    // List<StrategyInfo> strategies =
+    //     await FirebaseController.getStrategyInfo(email);
+    // Navigator.pushNamed(_state.context, ViewStrategyScreen.routeName,
+    //     arguments: {'user': user, 'strategyList': strategies});
 
     // if (!_state.formKey.currentState.validate()) {
     //   return;
     // }
     // _state.formKey.currentState.save();
 
-    // Map<String, String> imageInfo = await FirebaseController.uploadStorage(
-    //   image: _state.image,
-    //   uid: _state.user.uid,
-    //   listener: (double progressPercentage) {
-    //     _state.render(() {
-    //       uploadProgressMessage =
-    //           'Uploading: ${progressPercentage.toStringAsFixed(1)} %';
-    //     });
-    //   },
-    // );
-    // print('=========: ${imageInfo["path"]}');
-    // print('=========: ${imageInfo["url"]}');
+    try {
+      MyDialog.circularProgressStart(_state.context);
 
-    // try {
-    //   MyDialog.circularProgressStart(_state.context);
+      // 1. upload pic to Storage
+      print('made it to try');
+      Map<String, String> imageInfo =
+          await FirebaseController.uploadImageToFirebase(file);
 
-    //   // 1. upload pic to Storage
-    //   Map<String, String> imageInfo = await FirebaseController.uploadStorage(
-    //       image: _state.image,
-    //       uid: _state.user.uid,
-    //       listener: (double progressPercentage) {
-    //         _state.render(() {
-    //           uploadProgressMessage =
-    //               'Uploading: ${progressPercentage.toStringAsFixed(1)} %';
-    //         });
-    //       });
-    //   // 2. save strategy document to Firestore
-    //   var s = StrategyInfo(
-    //     strategyTitle: strategyTitle,
-    //     imagePath: imageInfo['path'],
-    //     imageURL: imageInfo['url'],
-    //     createdBy: _state.user.email,
-    //   );
+      // uid: _state.user.uid,
+      // listener: (double progressPercentage) {
+      //   _state.render(() {
+      //     uploadProgressMessage =
+      //         'Uploading: ${progressPercentage.toStringAsFixed(1)} %';
+      //   });
+      // });
+      print('uploaded????');
+      // 2. save strategy document to Firestore
+      var s = StrategyInfo(
+        strategyTitle: strategyTitle,
+        imagePath: imageInfo['path'],
+        imageURL: imageInfo['url'],
+        createdBy: _state.user.email,
+      );
 
-    //   s.docId = await FirebaseController.addStrategy(s);
-    //   _state.strategies.insert(0, s);
-    //   List<StrategyInfo> strategies =
-    //       await FirebaseController.getStrategyInfo(email);
-    //   MyDialog.circularProgressEnd(_state.context);
-    //   // 2. navigate to my teams screen to display teams
-    //   Navigator.pushReplacementNamed(
-    //       _state.context, ViewStrategyScreen.routeName,
-    //       arguments: {'user': user, 'stategyList': strategies});
+      s.docId = await FirebaseController.addStrategy(s);
+      _state.strategies.insert(0, s);
+      List<StrategyInfo> strategies =
+          await FirebaseController.getStrategyInfo(email);
+      MyDialog.circularProgressEnd(_state.context);
 
-    //   MyDialog.circularProgressEnd(_state.context);
+      // 2. navigate to my teams screen to display teams
+      Navigator.pushNamed(_state.context, ViewStrategyScreen.routeName,
+          arguments: {'user': user, 'stategyList': strategies});
 
-    //   Navigator.pushNamed(_state.context, ViewStrategyScreen.routeName);
-    // } catch (e) {
-    //   MyDialog.circularProgressEnd(_state.context);
+      // MyDialog.circularProgressEnd(_state.context);
 
-    //   MyDialog.info(
-    //     context: _state.context,
-    //     title: 'FireBase Error',
-    //     content: e.message ?? e.toString(),
-    //   );
-    // }
+      // Navigator.pushNamed(_state.context, ViewStrategyScreen.routeName);
+    } catch (e) {
+      print('try failed');
+      MyDialog.circularProgressEnd(_state.context);
+
+      MyDialog.info(
+        context: _state.context,
+        title: 'FireBase Error',
+        content: e.message ?? e.toString(),
+      );
+    }
   }
 
   String validatorStrategyTitle(String value) {
