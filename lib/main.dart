@@ -4,6 +4,7 @@ import 'package:iCoachSports/screens/addteam_screen.dart';
 import 'package:iCoachSports/screens/coachhome_screen.dart';
 import 'package:iCoachSports/screens/createaccount_screen.dart';
 import 'package:iCoachSports/screens/createstrategy_screen.dart';
+import 'package:iCoachSports/screens/editprofile_screen.dart';
 import 'package:iCoachSports/screens/login_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iCoachSports/screens/myteams_screen.dart';
@@ -38,6 +39,7 @@ class ICoachSportsApp extends StatelessWidget {
           CreateStrategyScreen.routeName: (context) => CreateStrategyScreen(),
           ViewStrategyScreen.routeName: (context) => ViewStrategyScreen(),
           ViewProfileScreen.routeName: (context) => ViewProfileScreen(),
+          EditProfileScreen.routeName: (context) => EditProfileScreen(),
           
         });
   }

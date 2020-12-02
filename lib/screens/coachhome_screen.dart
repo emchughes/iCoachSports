@@ -25,6 +25,7 @@ class _CoachHomeState extends State<CoachHomeScreen> {
   User user;
   List<TeamInfo> teams;
   List<StrategyInfo> strategies;
+  ProfileInfo profile;
 
   @override
   void initState() {
@@ -38,8 +39,10 @@ class _CoachHomeState extends State<CoachHomeScreen> {
   Widget build(BuildContext context) {
     Map arg = ModalRoute.of(context).settings.arguments;
     user ??= arg['user'];
+    print('user from home screen: $user');
     teams ??= arg['teamList'];
     strategies ??= arg['strategiesList'];
+    profile ??= arg['profileData'];
     return WillPopScope(
       onWillPop: () => Future.value(false),
       child: Scaffold(
@@ -158,11 +161,12 @@ class _Controller {
     //navigate to Profile page
     try {
       MyDialog.circularProgressStart(_state.context);
-      List<ProfileInfo> profile = await FirebaseController.getProfileInfo(email);
+      List<ProfileInfo> profile =
+          await FirebaseController.getProfileInfo(email);
       MyDialog.circularProgressEnd(_state.context);
 
       Navigator.pushNamed(_state.context, ViewProfileScreen.routeName,
-          arguments: {'user': user, 'profileData': profile});
+          arguments: {'user': _state.user, 'profileData': profile});
     } catch (e) {
       MyDialog.circularProgressEnd(_state.context);
       MyDialog.info(

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iCoachSports/controller/firebasecontroller.dart';
 import 'package:iCoachSports/models/StrategyInfo.dart';
+import 'package:iCoachSports/models/profileInfo.dart';
 import 'package:iCoachSports/models/teamInfo.dart';
 import 'package:iCoachSports/screens/coachhome_screen.dart';
 import 'package:iCoachSports/screens/createaccount_screen.dart';
@@ -18,7 +19,6 @@ class LogInScreen extends StatefulWidget {
 
 class _LogInState extends State<LogInScreen> {
   _Controller con;
-  User user;
   var formKey = GlobalKey<FormState>();
 
   @override
@@ -137,8 +137,9 @@ class _Controller {
     _state.formKey.currentState.save();
     MyDialog.circularProgressStart(_state.context);
     User user;
+    ProfileInfo profile;
     try {
-      var user = await FirebaseController.signIn(email, password);
+      user = await FirebaseController.signIn(email, password);
       print('USER: $user');
     } catch (e) {
       MyDialog.circularProgressEnd(_state.context);
@@ -150,12 +151,16 @@ class _Controller {
       return;
     }
 
-    List<TeamInfo> teams = await FirebaseController.getTeamInfo(email);
+    List<TeamInfo> teams = await FirebaseController.getTeamInfo(user.email);
     List<StrategyInfo> strategies =
-        await FirebaseController.getStrategyInfo(email);
+        await FirebaseController.getStrategyInfo(user.email);
 
-    Navigator.pushNamed(_state.context, CoachHomeScreen.routeName,
-        arguments: {'user': user, 'teamList': teams, 'strategyList': strategies});
+    Navigator.pushNamed(_state.context, CoachHomeScreen.routeName, arguments: {
+      'user': user,
+      'teamList': teams,
+      'strategyList': strategies,
+      'profileData': profile
+    });
   }
 
   void createAccount() async {

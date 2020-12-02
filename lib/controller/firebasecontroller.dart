@@ -19,6 +19,7 @@ class FirebaseController {
   static Future signIn(String email, String password) async {
     UserCredential auth = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
+    print('sign in user: $auth.user');
     return auth.user;
   }
 
@@ -50,7 +51,7 @@ class FirebaseController {
     return result;
   }
 
-    static Future<List<ProfileInfo>> getProfileInfo(String email) async {
+  static Future<List<ProfileInfo>> getProfileInfo(String email) async {
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection(ProfileInfo.COLLECTION)
         .where(ProfileInfo.CREATED_BY, isEqualTo: email)
@@ -82,28 +83,28 @@ class FirebaseController {
     return result;
   }
 
-  // static Future<Map<String, String>> uploadStorage({
-  //   @required File image,
-  //   String filePath,
-  //   @required String uid,
-  //   @required Function listener,
-  // }) async {
-  //   print('made it to upload storage');
-  //   filePath ??= '${StrategyInfo.IMAGE_FOLDER}/$uid/${DateTime.now()}';
-
-  //   StorageUploadTask task =
-  //       FirebaseStorage.instance.ref().child(filePath).putFile(image);
-  //   task.events.listen((event) {
-  //     double percentage = (event.snapshot.bytesTransferred.toDouble() /
-  //             event.snapshot.totalByteCount.toDouble()) *
-  //         100;
-  //     listener(percentage);
-  //   });
-  //   var download = await task.onComplete;
-  //   String url = await download.ref.getDownloadURL();
-  //   print('===========URL: $url');
-  //   return {'url': url, 'path': filePath};
-  // }
+  static Future<Map<String, String>> uploadStorage({
+    @required File image,
+    String filePath,
+    @required String uid,
+    @required Function listener,
+  }) async {
+    print('made it to uploadStorage!');
+    filePath ??= '${ProfileInfo.IMAGE_FOLDER}/$uid}';
+    print('made it past filePath');
+    StorageUploadTask task =
+        FirebaseStorage.instance.ref().child(filePath).putFile(image);
+    task.events.listen((event) {
+      double percentage = (event.snapshot.bytesTransferred.toDouble() /
+              event.snapshot.totalByteCount.toDouble()) *
+          100;
+      listener(percentage);
+    });
+    print('made it pastlistener');
+    var download = await task.onComplete;
+    String url = await download.ref.getDownloadURL();
+    return {'url': url, 'path': filePath};
+  }
 
   static Future uploadImageToFirebase(File imageFile) async {
     print('made it to uploadImage');
@@ -131,6 +132,19 @@ class FirebaseController {
     return ref.id;
   }
 
+  static Future<void> updatePhotoMemo(ProfileInfo photoMemo) async {
+    await FirebaseFirestore.instance
+        .collection(ProfileInfo.COLLECTION)
+        .doc(photoMemo.docId)
+        .set(photoMemo.serialize());
+  }
+
+  static Future<String> addProfileInfo(ProfileInfo profile) async {
+    DocumentReference ref = await FirebaseFirestore.instance
+        .collection(ProfileInfo.COLLECTION)
+        .add(profile.serialize());
+    return ref.id;
+  }
   //convert to file to upload
 //   final formkey = GlobalKey<FormState>();
 //   Uint8List image;

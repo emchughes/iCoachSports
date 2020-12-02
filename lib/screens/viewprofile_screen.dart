@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iCoachSports/models/profileInfo.dart';
+import 'package:iCoachSports/screens/editprofile_screen.dart';
 import 'package:iCoachSports/screens/views/myimageview.dart';
 
 class ViewProfileScreen extends StatefulWidget {
@@ -21,13 +22,14 @@ class _ViewProfileState extends State<ViewProfileScreen> {
     super.initState();
     con = _Controller(this);
   }
-  render(fn) => setState(fn);
 
+  render(fn) => setState(fn);
 
   @override
   Widget build(BuildContext context) {
     Map arg = ModalRoute.of(context).settings.arguments;
     user ??= arg['user'];
+    print('user: $user');
     profile ??= arg['profileData'];
     return Scaffold(
       appBar: AppBar(
@@ -39,6 +41,12 @@ class _ViewProfileState extends State<ViewProfileScreen> {
             fontSize: 30,
           ),
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: con.edit,
+          ),
+        ],
       ),
       body: profile.length == 0
           ? Text('No Profile', style: TextStyle(fontSize: 30.0))
@@ -68,4 +76,9 @@ class _Controller {
   _ViewProfileState _state;
 
   _Controller(this._state);
+  void edit() {
+    Navigator.pushNamed(_state.context, EditProfileScreen.routeName,
+        arguments: {'user': _state.user, 'profileData': _state.profile});
+    _state.render(() {});
+  }
 }
