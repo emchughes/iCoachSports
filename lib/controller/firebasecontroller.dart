@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iCoachSports/models/StrategyInfo.dart';
+import 'package:iCoachSports/models/profileInfo.dart';
 import 'package:iCoachSports/models/teamInfo.dart';
 import 'dart:typed_data';
 //import 'package:image_picker_web/image_picker_web.dart';
@@ -44,6 +45,22 @@ class FirebaseController {
     if (querySnapshot != null && querySnapshot.docs.length != 0) {
       for (var doc in querySnapshot.docs) {
         result.add(TeamInfo.deserialize(doc.data(), doc.id));
+      }
+    }
+    return result;
+  }
+
+    static Future<List<ProfileInfo>> getProfileInfo(String email) async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection(ProfileInfo.COLLECTION)
+        .where(ProfileInfo.CREATED_BY, isEqualTo: email)
+        .orderBy(ProfileInfo.COACH_NAME, descending: true)
+        .get();
+
+    var result = <ProfileInfo>[];
+    if (querySnapshot != null && querySnapshot.docs.length != 0) {
+      for (var doc in querySnapshot.docs) {
+        result.add(ProfileInfo.deserialize(doc.data(), doc.id));
       }
     }
     return result;

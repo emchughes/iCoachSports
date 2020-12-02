@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iCoachSports/controller/firebasecontroller.dart';
 import 'package:iCoachSports/models/StrategyInfo.dart';
+import 'package:iCoachSports/models/profileInfo.dart';
 import 'package:iCoachSports/models/teamInfo.dart';
 import 'package:iCoachSports/screens/createstrategy_screen.dart';
 import 'package:iCoachSports/screens/myteams_screen.dart';
@@ -143,6 +144,7 @@ class _Controller {
   _CoachHomeState _state;
   _Controller(this._state);
   String email;
+  User user;
 
   void addTeamButton() async {
     //navigate to AddScreen
@@ -154,15 +156,26 @@ class _Controller {
 
   void viewProfile() async {
     //navigate to Profile page
-    await Navigator.pushNamed(_state.context, ViewProfileScreen.routeName,
-        arguments: {'user': _state.user, 'teamList': _state.teams});
-    _state.render(() {});
+    try {
+      MyDialog.circularProgressStart(_state.context);
+      List<ProfileInfo> profile = await FirebaseController.getProfileInfo(email);
+      MyDialog.circularProgressEnd(_state.context);
+
+      Navigator.pushNamed(_state.context, ViewProfileScreen.routeName,
+          arguments: {'user': user, 'profileData': profile});
+    } catch (e) {
+      MyDialog.circularProgressEnd(_state.context);
+      MyDialog.info(
+        context: _state.context,
+        title: 'Firebase/Firestore error',
+        content: 'Cannot get team info. Try again later!',
+      );
+      return;
+    }
   }
 
   void viewTeamsButton() async {
     //navigate to myTeams screen
-
-    User user;
     try {
       MyDialog.circularProgressStart(_state.context);
       List<TeamInfo> teams = await FirebaseController.getTeamInfo(email);
@@ -183,7 +196,8 @@ class _Controller {
 
   void createStrategyButton() async {
     User user;
-     List<StrategyInfo> strategies = await FirebaseController.getStrategyInfo(email);
+    List<StrategyInfo> strategies =
+        await FirebaseController.getStrategyInfo(email);
     Navigator.pushNamed(_state.context, CreateStrategyScreen.routeName,
         arguments: {'user': user, 'strategyList': strategies});
     _state.render(() {});
