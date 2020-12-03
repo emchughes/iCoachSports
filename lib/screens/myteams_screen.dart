@@ -19,7 +19,7 @@ class _MyTeamsState extends State<MyTeamsScreen> {
   var formKey = GlobalKey<FormState>();
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     con = _Controller(this);
   }
@@ -49,13 +49,29 @@ class _MyTeamsState extends State<MyTeamsScreen> {
               itemCount: teams.length,
               itemBuilder: (BuildContext context, int index) => Container(
                 child: ListTile(
-                  title: Text(teams[index].teamName),
+                  title: Text(teams[index].teamName, style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 35.0,),),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text('Created by: ${teams[index].createdBy}'),
-                      Text('Team Name: ${teams[index].teamName}'),
-                      Text('Sport: ${teams[index].sport}'),
+                      Text(
+                        'Team Name: ${teams[index].teamName}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 20.0,
+                        ),
+                      ),
+                      Text(
+                        'Sport: ${teams[index].sport}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 20.0,
+                        ),
+                      ),
                     ],
                   ),
                 ),

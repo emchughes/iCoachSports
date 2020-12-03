@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iCoachSports/controller/firebasecontroller.dart';
 import 'package:iCoachSports/models/profileInfo.dart';
+import 'package:iCoachSports/screens/viewprofile_screen.dart';
 import 'package:iCoachSports/screens/views/mydialog.dart';
 import 'package:iCoachSports/screens/views/myimageview.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,6 +23,7 @@ class _EditProfileState extends State<EditProfileScreen> {
   User user;
   ProfileInfo info;
   File image;
+  String filePath;
   List<ProfileInfo> profile;
   var formKey = GlobalKey<FormState>();
 
@@ -39,6 +41,8 @@ class _EditProfileState extends State<EditProfileScreen> {
     user ??= arg['user'];
     print('user: $user');
     profile ??= arg['profileData'];
+    image ??= arg['image'];
+    print('image: $image');
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -144,6 +148,7 @@ class _Controller {
       // 1. upload pic to Storage
       Map<String, String> profileInfo = await FirebaseController.uploadStorage(
           image: _state.image,
+          filePath: _state.filePath,
           uid: _state.user.uid,
           listener: (double progressPercentage) {
             _state.render(() {
@@ -151,7 +156,7 @@ class _Controller {
                   'Uploading: ${progressPercentage.toStringAsFixed(1)} %';
             });
           });
-      print('uploaded???');
+      print('profileInfo: $profileInfo');
       //save profile info to Firestore
       var p = ProfileInfo(
         coachName: coachName,
@@ -163,9 +168,11 @@ class _Controller {
       p.docId = await FirebaseController.addProfileInfo(p);
       _state.profile.insert(0, p);
 
+      await _state.user.reload();
+      _state.user = FirebaseAuth.instance.currentUser;
+      Navigator.pushReplacementNamed(_state.context, ViewProfileScreen.routeName,
+            arguments: {'user': _state.user, 'profileData': _state.profile });
       MyDialog.circularProgressEnd(_state.context);
-
-      Navigator.pop(_state.context);
     } catch (e) {
       MyDialog.circularProgressEnd(_state.context);
 
@@ -178,6 +185,7 @@ class _Controller {
   }
 
   void getPicture(String src) async {
+    print('made it to get picture');
     try {
       PickedFile _imageFile;
       if (src == 'camera') {
@@ -188,7 +196,9 @@ class _Controller {
       _state.render(() {
         _state.image = File(_imageFile.path);
       });
-    } catch (e) {}
+    } catch (e) {
+      print('no get picture');
+    }
   }
 
   String validatorName(String value) {

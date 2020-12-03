@@ -12,7 +12,7 @@ import 'package:iCoachSports/screens/viewstrategy_screen.dart';
 import 'package:iCoachSports/screens/viewprofile_screen.dart';
 
 Future<void> main() async {
-    WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(ICoachSportsApp());
 }
@@ -24,10 +24,12 @@ class ICoachSportsApp extends StatelessWidget {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
+          scaffoldBackgroundColor: Colors.blue[400],
           textTheme: GoogleFonts.catamaranTextTheme(
             Theme.of(context).textTheme,
           ),
           primaryColor: Colors.green[300],
+          accentColor: Colors.white,
         ),
         initialRoute: LogInScreen.routeName,
         routes: {
@@ -40,7 +42,6 @@ class ICoachSportsApp extends StatelessWidget {
           ViewStrategyScreen.routeName: (context) => ViewStrategyScreen(),
           ViewProfileScreen.routeName: (context) => ViewProfileScreen(),
           EditProfileScreen.routeName: (context) => EditProfileScreen(),
-          
         });
   }
 }

@@ -159,12 +159,15 @@ class _Controller {
 
   void viewProfile() async {
     //navigate to Profile page
+    await _state.user.reload();
+      _state.user = FirebaseAuth.instance.currentUser;
     try {
       MyDialog.circularProgressStart(_state.context);
       List<ProfileInfo> profile =
           await FirebaseController.getProfileInfo(email);
       MyDialog.circularProgressEnd(_state.context);
 
+     
       Navigator.pushNamed(_state.context, ViewProfileScreen.routeName,
           arguments: {'user': _state.user, 'profileData': profile});
     } catch (e) {

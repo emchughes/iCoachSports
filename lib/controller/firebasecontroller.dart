@@ -4,15 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:iCoachSports/models/StrategyInfo.dart';
 import 'package:iCoachSports/models/profileInfo.dart';
 import 'package:iCoachSports/models/teamInfo.dart';
-import 'dart:typed_data';
-//import 'package:image_picker_web/image_picker_web.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart'; // For Image Picker
 import 'package:path/path.dart' as Path;
 
 class FirebaseController {
@@ -90,10 +84,17 @@ class FirebaseController {
     @required Function listener,
   }) async {
     print('made it to uploadStorage!');
-    filePath ??= '${ProfileInfo.IMAGE_FOLDER}/$uid}';
-    print('made it past filePath');
+    filePath ??= '${ProfileInfo.IMAGE_FOLDER}/$uid/${DateTime.now()}';
+    print('made it past filePath: $filePath, $image');
     StorageUploadTask task =
         FirebaseStorage.instance.ref().child(filePath).putFile(image);
+    task.events.listen((event) {
+      double percentage = (event.snapshot.bytesTransferred.toDouble() /
+              event.snapshot.totalByteCount.toDouble()) *
+          100;
+      listener(percentage);
+    });
+    print('made it past task');
     task.events.listen((event) {
       double percentage = (event.snapshot.bytesTransferred.toDouble() /
               event.snapshot.totalByteCount.toDouble()) *
@@ -145,25 +146,29 @@ class FirebaseController {
         .add(profile.serialize());
     return ref.id;
   }
-  //convert to file to upload
-//   final formkey = GlobalKey<FormState>();
-//   Uint8List image;
-//   Future<void> getImage() async {
-//     //Uint8List tempImg = await ImagePickerWeb.getImage(outputType: ImageType.bytes);
-//     Uint8List bytesFromPicker =
-//         await ImagePicker.getImage(asUint8List: true);
+static Future<void> updateProfile({
+    @required File image, // null no update needed
+    @required User user,
+    @required Function progressListener,
+  }) async {
+    if (image != null) {
+      // 1. upload the picture
+      String filePath = '${ProfileInfo.IMAGE_FOLDER}/${user.uid}/${user.uid}}';
+      StorageUploadTask uploadTask =
+          FirebaseStorage.instance.ref().child(filePath).putFile(image);
 
-//     if (bytesFromPicker != null) {
-//       debugPrint(bytesFromPicker.toString());
-//  if (tempImg != null) {
-//   setState(() async {
-//     image = tempImg;
-//     final tempDir = await getTemporaryDirectory();
-//     final file = await new File('${tempDir.path}/image.jpg').create();
-//     file.writeAsBytesSync(image);
-//     });
-//    }
-//   }
-// }
-//}
+      uploadTask.events.listen((event) {
+        double percentage = (event.snapshot.bytesTransferred.toDouble() /
+                event.snapshot.totalByteCount.toDouble()) *
+            100;
+        progressListener(percentage);
+      });
+      var download = await uploadTask.onComplete;
+      String url = await download.ref.getDownloadURL();
+      await FirebaseAuth.instance.currentUser
+          .updateProfile(photoURL: url);
+    } else {
+      print('no upload');
+    }
+  }
 }
