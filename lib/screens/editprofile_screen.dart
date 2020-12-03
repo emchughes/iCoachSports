@@ -170,7 +170,7 @@ class _Controller {
 
       await _state.user.reload();
       _state.user = FirebaseAuth.instance.currentUser;
-      Navigator.pushReplacementNamed(_state.context, ViewProfileScreen.routeName,
+      Navigator.pushNamed(_state.context, ViewProfileScreen.routeName,
             arguments: {'user': _state.user, 'profileData': _state.profile });
       MyDialog.circularProgressEnd(_state.context);
     } catch (e) {
